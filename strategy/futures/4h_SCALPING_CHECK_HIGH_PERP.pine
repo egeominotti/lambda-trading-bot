@@ -1,6 +1,6 @@
 //@version=4
 //© Doyouknow
-strategy(title="SCALPIG_CHECK_HIGH_4h_FUTURES", shorttitle="SCALPIG_HIGH_4h_FUTURES", overlay=true)
+strategy(title="SCALPING_CHECK_HIGH_4h_FUTURES", shorttitle="SCALPING_HIGH_4h_FUTURES", overlay=true)
 
 ema1len             =       input(title="EMA1", type = input.integer, defval = 7)
 ema2len             =       input(title="EMA2", type = input.integer, defval = 12)
