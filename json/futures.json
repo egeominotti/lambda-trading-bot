@@ -3,5 +3,5 @@
   "exchange": "{{exchange}}",
   "ticker": "{{ticker}}",
   "leverage": 3,
-  "capital": 0.30
+  "capital": 0.33
 }
