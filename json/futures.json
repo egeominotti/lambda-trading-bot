@@ -1,0 +1,7 @@
+{
+  "action": "{{strategy.order.action}}",
+  "exchange": "{{exchange}}",
+  "ticker": "{{ticker}}",
+  "leverage": 3,
+  "capital": 0.30
+}

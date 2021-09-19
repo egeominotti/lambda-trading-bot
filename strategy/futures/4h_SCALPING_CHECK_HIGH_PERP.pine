@@ -1,0 +1,40 @@
+//@version=4
+//© Doyouknow
+strategy(title="SCALPIG_CHECK_HIGH_4h_FUTURES", shorttitle="SCALPIG_HIGH_4h_FUTURES", overlay=true)
+
+ema1len             =       input(title="EMA1", type = input.integer, defval = 7)
+ema2len             =       input(title="EMA2", type = input.integer, defval = 12)
+
+hiLen               =       input(title="High Length", type=input.integer, group="High Definitions", defval=1, step=10)
+hiOffset            =       input(title="High offset", type=input.integer, group="High Definitions", defval=0, step=1)
+highSource          =       input(title="High source", type=input.source, group="High Definitions", defval=high)
+
+stoplossPer         =       input(4.5, title='Stop Loss %', type=input.float) / 100
+
+// Indicators
+
+ema1                =       ema(close, ema1len)
+ema2                =       ema(close, ema2len)
+hiHighs             =       highest(highSource, hiLen)
+
+//***********
+// Alert messages
+//***********
+alert_msg_long_entry        = "ENTRY LONG\nSymbol: "+syminfo.tickerid+"\nPrice: "+tostring(close)
+alert_msg_long_exit_tp      = "Exit Long TP\nSymbol: "+syminfo.tickerid+"\nPrice: "+tostring(close)
+alert_msg_long_exit_sl      = "Exit Long SL\nSymbol: "+syminfo.tickerid+"\nPrice: "+tostring(close)
+
+// Plotting
+plot(ema1, title="EMA 1", color=color.new(color.red, transp=50))
+plot(ema2, title="EMA 2", color=color.new(color.orange, transp=50))
+
+//STRATEGY
+bought              =       strategy.opentrades[0] == 1 and strategy.position_size[0] > strategy.position_size[1]
+entry_price         =       valuewhen(bought, open, 0)
+entry               =       close > ema1 and ema1 > ema2
+stoploss            =       close <= entry_price * (1 - stoplossPer)
+takeprofit          =       close < high[hiOffset] and close < ema1 and close > entry_price
+
+strategy.entry(id = "EL", long = strategy.long, when = entry, alert_message = alert_msg_long_entry)
+strategy.close(id= "EL", comment= "TP", when = takeprofit, alert_message = alert_msg_long_exit_tp)
+strategy.close(id = "EL",comment= "SL", when = stoploss, alert_message = alert_msg_long_exit_sl)

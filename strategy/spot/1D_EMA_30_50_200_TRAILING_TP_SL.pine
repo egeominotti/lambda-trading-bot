@@ -1,0 +1,90 @@
+//@version=4
+//© Doyouknow
+strategy(title="EMA30_50_200_HIGH_TRAILING_TP_SL", shorttitle="EMA30-50-200_TRAILING_TP_SL", overlay=true)
+// INPUTS
+ 
+// BACKTEST PERIOD INPUT ============================================================================================
+fromDate                            =       input(defval = timestamp("01 Jan 2012 00:00 UTC"), title = "From Date", type = input.time, minval = timestamp("01 Jan 1970 00:00 UTC"), group = "Backtest Period") // backtest start date
+toDate                              =       input(defval = timestamp("31 Dec 2121 23:59 UTC"), title = "To Date",   type = input.time, minval = timestamp("01 Jan 1970 00:00 UTC"), group = "Backtest Period") // backtest finish date
+ 
+isWithinBacktestPeriod() =>
+    time >= fromDate and time <= toDate ? true : false // create function "within window of time"
+ 
+ema1len                             =       input(title="EMA1", type = input.integer, defval = 30)
+ema2len                             =       input(title="EMA2", type = input.integer, defval = 50)
+ema3len                             =       input(title="EMA3", type = input.integer, defval = 200)
+ 
+hiLen                               =       input(title="High Length", type=input.integer, group="High Definitions", defval=500, step=10)
+hiOffset                            =       input(title="High offset", type=input.integer, group="High Definitions", defval=0, step=1)
+highSource                          =       input(title="High source", type=input.source, group="High Definitions", defval=high)
+ 
+longTakeProfitPerc                  =       input(defval = 5.0, title = 'Take Profit %', type = input.float, minval = 0.1, step = 0.1, tooltip = "The percentage of the price increase to set the take profit price target.", group = "Strategy") / 100
+enableTrailing                      =       input(defval = true, title = "Enable Trailing", type = input.bool, tooltip = "Enable or disable the trailing for take profit.", group = "Strategy")
+trailingTakeProfitDeviationPerc     =       input(defval = 2.0, title = "Trailing Take Profit Deviation %", type = input.float, minval = 0.05, maxval = 100, step = 0.05, tooltip = "The step to follow the price when the take profit limit is reached.", group = "Strategy") / 100 
+longStopLossPerc                    =       input(defval = 3.0, title = 'Stop Loss %', type = input.float, minval = 0.1, step = 0.1, tooltip = "The percentage of the price to decrese stop loss price target.", group = "Strategy") / 100
+enableTrailingSL                    =       input(defval = true, title = "Enable Trailing", type = input.bool, tooltip = "Enable or disable the trailing for take profit.", group = "Strategy")
+trailingStopLossDeviationPerc       =       input(defval = 0.5, title = "Stop Loss Deviation %", type = input.float, minval = 0.05, maxval = 100, step = 0.05, tooltip = "The step to follow the price when the take profit limit is reached.", group = "Strategy") / 100
+ 
+// Indicators
+ema1                =       ema(close, ema1len)
+ema2                =       ema(close, ema2len)
+ema3                =       ema(close, ema3len)
+ 
+hiHighs             =       highest(highSource, hiLen)
+ 
+//***********
+// Alert messages
+//***********
+alert_msg_long_entry        = "ENTRY LONG\nSymbol: "+syminfo.tickerid+"\nPrice: "+tostring(close)
+alert_msg_long_exit_tp      = "Exit Long TP\nSymbol: "+syminfo.tickerid+"\nPrice: "+tostring(close)
+alert_msg_long_exit_sl      = "Exit Long SL\nSymbol: "+syminfo.tickerid+"\nPrice: "+tostring(close)
+ 
+// Plotting
+plot(ema1, title="EMA 1", color=color.new(color.red, transp=50))
+plot(ema2, title="EMA 2", color=color.new(color.orange, transp=50))
+plot(ema3, title="EMA 3", color=color.new(color.purple, transp=50))
+ 
+ 
+bought              =       strategy.opentrades[0] == 1 and strategy.position_size[0] > strategy.position_size[1]
+entry_price         =       valuewhen(bought, open, 0)
+ 
+ 
+if (isWithinBacktestPeriod())
+    //STRATEGY
+    entry               =       ((close > ema3) and (close <= ema1) and (close >= ema2)) or (low <= ema1) and (low >= ema2) //and (open < ema3))
+ 
+    bool longIsActive   =       entry or strategy.position_size > 0
+ 
+    float longStopLossPrice = na
+ 
+    longStopLossPrice := if (isWithinBacktestPeriod() and longIsActive)
+        nz(longStopLossPrice[1], close * (1 - longStopLossPerc))
+    else
+        na
+ 
+    longTrailingStopLossStepTicks = longStopLossPrice * trailingStopLossDeviationPerc / syminfo.mintick
+ 
+    float longTakeProfitPrice = na
+ 
+    longTakeProfitPrice := if (isWithinBacktestPeriod() and longIsActive)
+        nz(longTakeProfitPrice[1], close * (1 + longTakeProfitPerc))
+    else
+        na
+ 
+    longTrailingTakeProfitStepTicks = longTakeProfitPrice * trailingTakeProfitDeviationPerc / syminfo.mintick
+ 
+    takeprofit            =       high[hiOffset] == hiHighs
+    stoploss              =       close <= entry_price * (1 - longStopLossPerc)
+    // getting into LONG position
+    strategy.entry(id = "EL", long = strategy.long, when = entry, alert_message = alert_msg_long_entry)
+ 
+    if entry
+        alert(alert_msg_long_entry, alert.freq_once_per_bar)
+ 
+    // submit exit orders for trailing take profit price
+    //strategy.close(id="EL",comment="TP", when = takeprofit, alert_message = alert_msg_long_exit_tp)
+    if takeprofit
+        strategy.exit(id = "TP",from_entry="EL", limit = enableTrailing ? na : longTakeProfitPrice, trail_price = enableTrailing ? longTakeProfitPrice : na, trail_offset = enableTrailing ? longTrailingTakeProfitStepTicks : na, when = longIsActive, alert_message = alert_msg_long_exit_tp)
+    else
+        if stoploss
+            strategy.exit(id = "TP/SL",from_entry="EL", limit = enableTrailingSL ? na : longStopLossPrice, trail_price = enableTrailingSL ? longStopLossPrice : na, trail_offset = enableTrailingSL ? longTrailingStopLossStepTicks : na, when = longIsActive, alert_message = alert_msg_long_exit_sl)
