@@ -67,8 +67,9 @@ def tradingspot():
 
             # buy
             if action == 'buy':
-                order = exchange.buy()
                 balance = round(exchange.getBalance(), 3)
+                order = exchange.buy()
+
 
                 now = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
                 message = "Buy: " + str(ticker) + " 📈 " + \
