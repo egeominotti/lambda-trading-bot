@@ -42,7 +42,7 @@ class Spot:
 
     def buyAmount(self):
 
-        balance_buy = float(self.client.get_asset_balance(asset='USDT')['free'])
+        balance_buy = float(self.client.get_asset_balance(asset='BUSD')['free'])
         close = float(self.client.get_symbol_ticker(symbol=self.symbol)['price'])
         max_buy = round(balance_buy / close * .995, self.getSymbolPrecision())
 
@@ -50,7 +50,7 @@ class Spot:
 
     def sellAmount(self):
 
-        balance_sell = float(self.client.get_asset_balance(asset=self.symbol.replace('USDT', ''))['free'])
+        balance_sell = float(self.client.get_asset_balance(asset=self.symbol.replace('BUSD', ''))['free'])
         max_sell = round(balance_sell * .995, self.getSymbolPrecision())
 
         return max_sell
