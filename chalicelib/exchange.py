@@ -33,7 +33,7 @@ class Spot:
     def getBalance(self):
         balances = self.client.get_account()
         for _balance in balances["balances"]:
-            if _balance["asset"] == 'USDT':
+            if _balance["asset"] == 'BUSD':
                 usdt = _balance["free"]
                 return float(usdt)
 
