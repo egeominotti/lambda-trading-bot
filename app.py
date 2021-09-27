@@ -76,7 +76,7 @@ def tradingspot():
                           "\n" + "User: " + k + \
                           "\n" + "Market Spot" \
                                  "\n" + "Buy Price: " + str(exchange.getCurrentPrice()) + \
-                          "\n" + "Balance: " + str(balance) + " $" \
+                          "\n" + "Balance: " + str(balance) + "$" \
                           "\nDate: " + str(now)
 
                 telegram.send(message)
@@ -91,7 +91,7 @@ def tradingspot():
                           "\n" + "User: " + k + \
                           "\n" + "Market Spot" \
                                  "\n" + "Sell Price: " + str(exchange.getCurrentPrice()) + \
-                          "\n" + "Balance: " + str(balance) + " $" \
+                          "\n" + "Balance: " + str(balance) + "$" \
                           "\nDate: " + str(now)
 
                 telegram.send(message)
