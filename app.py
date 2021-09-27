@@ -1,6 +1,5 @@
 import datetime
 from threading import Thread
-
 from chalice import Chalice
 from chalicelib.telegram import Telegram
 from chalicelib.exchange import Spot
@@ -103,69 +102,69 @@ def tradingspot():
     return {'Trade': True}
 
 
-@app.route('/tradingfutures', methods=['POST'])
-def tradingfutures():
-    """
-    JSON
-
-    {
-        "action": "{{strategy.order.action}}",
-        "exchange": "{{exchange}}",
-        "ticker": "{{ticker}}",
-        "leverage": 3,
-        "capital": 0.30
-    }
-    """
-
-    users = {
-        'egeo': {
-            'key': 'vyghMLzH2Pvr0TCoV11Equ9kIK2jxL6ZpDh8pyUBz4hvAWXSLWO6rBHbogQmX9lH',
-            'secret': 'yTmr8uu0w3ARIzTlYadGkWX79BlTHSybzzJeInrWcjUoygP3K7t81j4WXd8amMOM'
-        },
-        'carlo': {
-            'key': 'skorPuUbg9lMP15I2WAcjTwKH84o0mDg6iTCLFxWti2bWtBOOgDET3XlkFh2oiJB',
-            'secret': 'GA57mual3HxhqsaLI7HUJd5UQtWUMaFUtxSVIoECfHNKKNXprKYGrNf8NhX2LXa2'
-        },
-    }
-
-    combination = {
-        "ETHUSDTPERP": "ETHUSDT",
-        "BTCUSDTPERP": "BTCUSDT"
-    }
-
-    request = app.current_request
-    data = request.json_body
-
-    action = data.get('action')
-    symbol = combination[data.get('ticker')]
-    leverage = data.get('leverage')
-    capital = data.get('capital')
-
-    telegram = Telegram()
-
-    thread_list = list()
-    for k, v in users.items():
-        api_key = v.get('key')
-        api_secret = v.get('secret')
-
-        values = {
-            'api_key': api_key,
-            'api_secret': api_secret,
-            'action': action,
-            'symbol': symbol,
-            'capital': capital,
-            'leverage': leverage,
-            'telegram': telegram,
-            'user': k
-        }
-
-        thread = Thread(target=threadtradefuturs, args=(values,))
-        # thread.daemon = True
-        app.log.debug("Thread for: " + str(k))
-        thread_list.append(thread)
-        thread.start()
-
-    for thread in thread_list:
-        thread.join()
-
-    return {'Trade': True}
+# @app.route('/tradingfutures', methods=['POST'])
+# def tradingfutures():
+#     """
+#     JSON
+#
+#     {
+#         "action": "{{strategy.order.action}}",
+#         "exchange": "{{exchange}}",
+#         "ticker": "{{ticker}}",
+#         "leverage": 3,
+#         "capital": 0.30
+#     }
+#     """
+#
+#     users = {
+#         'egeo': {
+#             'key': 'vyghMLzH2Pvr0TCoV11Equ9kIK2jxL6ZpDh8pyUBz4hvAWXSLWO6rBHbogQmX9lH',
+#             'secret': 'yTmr8uu0w3ARIzTlYadGkWX79BlTHSybzzJeInrWcjUoygP3K7t81j4WXd8amMOM'
+#         },
+#         'carlo': {
+#             'key': 'skorPuUbg9lMP15I2WAcjTwKH84o0mDg6iTCLFxWti2bWtBOOgDET3XlkFh2oiJB',
+#             'secret': 'GA57mual3HxhqsaLI7HUJd5UQtWUMaFUtxSVIoECfHNKKNXprKYGrNf8NhX2LXa2'
+#         },
+#     }
+#
+#     combination = {
+#         "ETHUSDTPERP": "ETHUSDT",
+#         "BTCUSDTPERP": "BTCUSDT"
+#     }
+#
+#     request = app.current_request
+#     data = request.json_body
+#
+#     action = data.get('action')
+#     symbol = combination[data.get('ticker')]
+#     leverage = data.get('leverage')
+#     capital = data.get('capital')
+#
+#     telegram = Telegram()
+#
+#     thread_list = list()
+#     for k, v in users.items():
+#         api_key = v.get('key')
+#         api_secret = v.get('secret')
+#
+#         values = {
+#             'api_key': api_key,
+#             'api_secret': api_secret,
+#             'action': action,
+#             'symbol': symbol,
+#             'capital': capital,
+#             'leverage': leverage,
+#             'telegram': telegram,
+#             'user': k
+#         }
+#
+#         thread = Thread(target=threadtradefuturs, args=(values,))
+#         # thread.daemon = True
+#         app.log.debug("Thread for: " + str(k))
+#         thread_list.append(thread)
+#         thread.start()
+#
+#     for thread in thread_list:
+#         thread.join()
+#
+#     return {'Trade': True}
