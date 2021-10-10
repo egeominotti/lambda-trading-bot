@@ -44,10 +44,6 @@ def tradingspot():
             'key': 'cGAkMTuEYViqLzQ1jqlRG6RnOnZgSCbdh5gCwgPLvKABjbfnZimN5HKNEf9TSp6T',
             'secret': 'CROpCy26Koy6ufPcgx4C59dhHeMKbGXWiM4DccsFijcdPnkItH93PlNJAlUP1DJ5'
         },
-        'giulia': {
-            'key': 'kRPoyYxsbtpa1n665N7a0kn3jt4W8K5Lch82koZ71TJNiI9Ot7e3A0KIuUZeO479',
-            'secret': 'ZOMGSCWrnf06VOIuyt8JYDYA9xf05PoYyZy4vqgfBU0GIUVPSd1LW8rdMfZxpWOj'
-        }
     }
 
     request = app.current_request
