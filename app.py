@@ -60,8 +60,7 @@ def tradingspot():
     for k, v in users.items():
 
         try:
-            quantity = v.get('quantity')
-            exchange = Spot(api_key=v.get('key'), api_secret=v.get('secret'), symbol=ticker, quantity=quantity)
+            exchange = Spot(api_key=v.get('key'), api_secret=v.get('secret'), symbol=ticker, quantity=v.get('quantity'))
 
             # buy
             if action == 'buy':
@@ -70,6 +69,7 @@ def tradingspot():
 
                 now = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
                 message = "Buy: " + str(ticker) + " 📈 " + \
+                          "\n" + "Size: " + str(v.get('quantity')) + "$" \
                           "\n" + "User: " + k + \
                           "\n" + "Market Spot" \
                                  "\n" + "Buy Price: " + str(exchange.getCurrentPrice()) + \
@@ -85,6 +85,7 @@ def tradingspot():
 
                 now = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
                 message = "Sell: " + str(ticker) + " ✅ " + \
+                          "\n" + "Size: " + str(v.get('quantity')) + "$" \
                           "\n" + "User: " + k + \
                           "\n" + "Market Spot" \
                                  "\n" + "Sell Price: " + str(exchange.getCurrentPrice()) + \
