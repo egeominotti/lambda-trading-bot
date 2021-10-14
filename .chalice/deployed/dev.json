@@ -3,7 +3,7 @@
     {
       "name": "managed-layer",
       "resource_type": "lambda_layer",
-      "layer_version_arn": "arn:aws:lambda:eu-south-1:313057141907:layer:bot-dev-managed-layer:95"
+      "layer_version_arn": "arn:aws:lambda:eu-south-1:313057141907:layer:bot-dev-managed-layer:96"
     },
     {
       "name": "default-role",
