@@ -28,25 +28,27 @@ def tradingspot():
     """
 
     users = {
+
         'egeo': {
             'key': 'vyghMLzH2Pvr0TCoV11Equ9kIK2jxL6ZpDh8pyUBz4hvAWXSLWO6rBHbogQmX9lH',
             'secret': 'yTmr8uu0w3ARIzTlYadGkWX79BlTHSybzzJeInrWcjUoygP3K7t81j4WXd8amMOM',
-            'quantity': 150,
+            'quantity': 0,
         },
         'carlo': {
             'key': 'skorPuUbg9lMP15I2WAcjTwKH84o0mDg6iTCLFxWti2bWtBOOgDET3XlkFh2oiJB',
             'secret': 'GA57mual3HxhqsaLI7HUJd5UQtWUMaFUtxSVIoECfHNKKNXprKYGrNf8NhX2LXa2',
-            'quantity': 300,
+            'quantity': 0,
         },
         'matteo': {
             'key': 'HgXwZ71GumHVtSDXLEApPA1khbjzFP5PitUjDFX4YWD60TOC5764gRhWgst6BclC',
             'secret': 'aeF2oUUROf4V0cxr0wOORKtZachDukTkUTC0zuXmnMJuUZBuqVcYGZWF6g1RsfEK',
             'quantity': 0,
         },
-        # 'giuseppe': {
-        #     'key': 'cGAkMTuEYViqLzQ1jqlRG6RnOnZgSCbdh5gCwgPLvKABjbfnZimN5HKNEf9TSp6T',
-        #     'secret': 'CROpCy26Koy6ufPcgx4C59dhHeMKbGXWiM4DccsFijcdPnkItH93PlNJAlUP1DJ5'
-        # },
+        'giuseppe': {
+            'key': 'cGAkMTuEYViqLzQ1jqlRG6RnOnZgSCbdh5gCwgPLvKABjbfnZimN5HKNEf9TSp6T',
+            'secret': 'CROpCy26Koy6ufPcgx4C59dhHeMKbGXWiM4DccsFijcdPnkItH93PlNJAlUP1DJ5',
+            'quantity': 0,
+        },
     }
 
     request = app.current_request
@@ -70,7 +72,7 @@ def tradingspot():
                 now = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
                 message = "Buy: " + str(ticker) + " 📈 " + \
                           "\n" + "Size: " + str(v.get('quantity')) + "$" \
-                          "\n" + "User: " + k + \
+                                                                     "\n" + "User: " + k + \
                           "\n" + "Market Spot" \
                                  "\n" + "Buy Price: " + str(exchange.getCurrentPrice()) + \
                           "\n" + "Balance: " + str(balance) + "$" \
@@ -86,7 +88,7 @@ def tradingspot():
                 now = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
                 message = "Sell: " + str(ticker) + " ✅ " + \
                           "\n" + "Size: " + str(v.get('quantity')) + "$" \
-                          "\n" + "User: " + k + \
+                                                                     "\n" + "User: " + k + \
                           "\n" + "Market Spot" \
                                  "\n" + "Sell Price: " + str(exchange.getCurrentPrice()) + \
                           "\n" + "Balance: " + str(balance) + "$" \
