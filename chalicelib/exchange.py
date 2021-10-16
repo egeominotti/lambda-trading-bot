@@ -16,10 +16,12 @@ class Spot:
             api_secret,
             symbol,
             quantity,
+            asset,
     ):
         self.client = Client(api_key=api_key, api_secret=api_secret)
         self.symbol = symbol
         self.quantity = quantity
+        self.asset = asset
 
     def getSymbolPrecision(self):
 
@@ -35,7 +37,7 @@ class Spot:
     def getBalance(self):
         balances = self.client.get_account()
         for _balance in balances["balances"]:
-            if _balance["asset"] == 'BUSD':
+            if _balance["asset"] == self.asset:
                 usdt = _balance["free"]
                 return float(usdt)
 
@@ -48,7 +50,7 @@ class Spot:
 
         # usa tutto il capitale
         if self.quantity == 0:
-            balance_buy = float(self.client.get_asset_balance(asset='BUSD')['free'])
+            balance_buy = float(self.client.get_asset_balance(asset=self.asset)['free'])
             close = float(self.client.get_symbol_ticker(symbol=self.symbol)['price'])
             max_buy = round(balance_buy / close * .997, self.getSymbolPrecision())
 
@@ -66,7 +68,7 @@ class Spot:
             max_sell = round(self.quantity * .997, self.getSymbolPrecision())
 
         if self.quantity == 0:
-            balance_sell = float(self.client.get_asset_balance(asset=self.symbol.replace('BUSD', ''))['free'])
+            balance_sell = float(self.client.get_asset_balance(asset=self.symbol.replace(self.asset, ''))['free'])
             max_sell = round(balance_sell * .997, self.getSymbolPrecision())
 
         return max_sell

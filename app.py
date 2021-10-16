@@ -56,13 +56,15 @@ def tradingspot():
 
     action = data.get('action')
     ticker = data.get('ticker')
+    asset = data.get('asset')
 
     telegram = Telegram()
 
     for k, v in users.items():
 
         try:
-            exchange = Spot(api_key=v.get('key'), api_secret=v.get('secret'), symbol=ticker, quantity=v.get('quantity'))
+            exchange = Spot(api_key=v.get('key'), api_secret=v.get('secret'), symbol=ticker, quantity=v.get('quantity'),
+                            asset=asset)
 
             # buy
             if action == 'buy':
@@ -75,15 +77,14 @@ def tradingspot():
                 message = "Buy Spot: " + str(ticker) + " 📈 " + \
                           "\n" + "User: " + k + \
                           "\n" + "Market Spot" \
-                          "\n" + "Buy Price: " + str(exchange.getCurrentPrice()) + \
+                                 "\n" + "Buy Price: " + str(exchange.getCurrentPrice()) + \
                           "\n" + "Balance: " + str(balance) + "$" \
-                          "\nDate: " + str(now)
+                                                              "\nDate: " + str(now)
 
                 telegram.send(message)
 
             # sell
             if action == 'sell':
-
                 order = exchange.sell()
                 balance = round(exchange.getBalance(), 3)
 
@@ -91,9 +92,9 @@ def tradingspot():
                 message = "Sell Spot: " + str(ticker) + " ✅ " + \
                           "\n" + "User: " + k + \
                           "\n" + "Market Spot" \
-                          "\n" + "Sell Price: " + str(exchange.getCurrentPrice()) + \
+                                 "\n" + "Sell Price: " + str(exchange.getCurrentPrice()) + \
                           "\n" + "Balance: " + str(balance) + "$" \
-                          "\nDate: " + str(now)
+                                                              "\nDate: " + str(now)
 
                 telegram.send(message)
 
