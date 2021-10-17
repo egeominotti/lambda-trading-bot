@@ -25,7 +25,6 @@ def tradespot(value):
 
             order_buy = exchange.buy()
             if order_buy > 0:
-                print(order_buy)
                 balance = round(exchange.getBalance(), 3)
                 now = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
                 message = "Buy Spot: " + str(ticker) + " 📈 " + \
