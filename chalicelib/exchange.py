@@ -38,8 +38,8 @@ class Spot:
         balances = self.client.get_account()
         for _balance in balances["balances"]:
             if _balance["asset"] == self.asset:
-                usdt = _balance["free"]
-                return float(usdt)
+                free_asset = _balance["free"]
+                return float(free_asset)
 
     def getCurrentPrice(self):
         return float(self.client.get_symbol_ticker(symbol=self.symbol)['price'])

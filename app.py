@@ -63,25 +63,31 @@ def tradingspot():
     for k, v in users.items():
 
         try:
-            exchange = Spot(api_key=v.get('key'), api_secret=v.get('secret'), symbol=ticker, quantity=v.get('quantity'),
+            exchange = Spot(api_key=v.get('key'),
+                            api_secret=v.get('secret'),
+                            symbol=ticker,
+                            quantity=v.get('quantity'),
                             asset=asset)
 
             # buy
             if action == 'buy':
-                # Buy asset with quantity
-                order = exchange.buy()
-                # Fetch balance
                 balance = round(exchange.getBalance(), 3)
+                if balance > 0:
 
-                now = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
-                message = "Buy Spot: " + str(ticker) + " 📈 " + \
-                          "\n" + "User: " + k + \
-                          "\n" + "Market Spot" \
-                                 "\n" + "Buy Price: " + str(exchange.getCurrentPrice()) + \
-                          "\n" + "Balance: " + str(balance) + "$" \
-                                                              "\nDate: " + str(now)
+                    # Buy asset with quantity
+                    order = exchange.buy()
+                    # Fetch balance
+                    balance = round(exchange.getBalance(), 3)
 
-                telegram.send(message)
+                    now = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+                    message = "Buy Spot: " + str(ticker) + " 📈 " + \
+                              "\n" + "User: " + k + \
+                              "\n" + "Market Spot" \
+                                     "\n" + "Buy Price: " + str(exchange.getCurrentPrice()) + \
+                              "\n" + "Balance: " + str(balance) + "$" \
+                                                                  "\nDate: " + str(now)
+
+                    telegram.send(message)
 
             # sell
             if action == 'sell':
