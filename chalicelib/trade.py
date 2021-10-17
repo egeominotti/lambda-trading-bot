@@ -9,9 +9,9 @@ def tradespot(value):
     api_key = value.get('api_key')
     api_secret = value.get('api_secret')
     ticker = value.get('ticker')
+    asset = value.get('asset')
     action = value.get('action')
     user = value.get('user')
-    asset = value.get('asset')
     telegram = value.get('telegram')
 
     try:

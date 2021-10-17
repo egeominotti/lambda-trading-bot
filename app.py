@@ -58,6 +58,7 @@ def tradingspot():
 
     thread_list = list()
     for k, v in users.items():
+
         api_key = v.get('key')
         api_secret = v.get('secret')
 
@@ -65,14 +66,13 @@ def tradingspot():
             'api_key': api_key,
             'api_secret': api_secret,
             'action': action,
-            'symbol': ticker,
+            'ticker': ticker,
             'telegram': telegram,
             "asset": asset,
             'user': k
         }
 
         thread = Thread(target=tradespot, args=(values,))
-        # thread.daemon = True
         app.log.debug("Thread for: " + str(k))
         thread_list.append(thread)
         thread.start()

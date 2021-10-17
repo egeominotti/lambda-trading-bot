@@ -60,7 +60,8 @@ class Spot:
         return -1
 
     def sellAmount(self):
-
+        print(self.symbol)
+        print(self.asset)
         balance_sell = float(self.client.get_asset_balance(asset=self.symbol.replace(self.asset, ''))['free'])
         if balance_sell > 0.0001:
             max_sell = round(balance_sell * .997, self.getSymbolPrecision())
