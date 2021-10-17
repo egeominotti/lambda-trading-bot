@@ -58,13 +58,14 @@ def tradespot(value):
             if isinstance(order_sell, dict):
 
                 balance = round(exchange.getBalance(), 3)
+                executedQty = float(order_sell.get('executedQty'))
 
                 now = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
                 message = "Sell Spot: " + str(ticker) + " ✅ " + \
                           "\n" + "User: " + user + \
                           "\n" + "Market Spot" \
                           "\n" + "Sell Price: " + str(exchange.getCurrentPrice()) + \
-                          "\n" + "Balance: " + str(balance) + "$" \
+                          "\n" + "Quantity: " + str(round(executedQty, exchange.getSymbolPrecision())) + \
                           "\nDate: " + str(now)
 
                 telegram.send(message)
