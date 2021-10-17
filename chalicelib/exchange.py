@@ -15,12 +15,10 @@ class Spot:
             api_key,
             api_secret,
             symbol,
-            quantity,
             asset,
     ):
         self.client = Client(api_key=api_key, api_secret=api_secret)
         self.symbol = symbol
-        self.quantity = quantity
         self.asset = asset
 
     def getSymbolPrecision(self):
