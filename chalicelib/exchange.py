@@ -75,21 +75,30 @@ class Spot:
 
     def sell(self):
 
-        return self.client.create_order(
-            symbol=self.symbol,
-            side=Client.SIDE_SELL,
-            type=Client.ORDER_TYPE_MARKET,
-            quantity=self.sellAmount(),
-        )
+        sell_amount = self.sellAmount()
+        if sell_amount > 0:
+
+            return self.client.create_order(
+                symbol=self.symbol,
+                side=Client.SIDE_SELL,
+                type=Client.ORDER_TYPE_MARKET,
+                quantity=sell_amount,
+            )
+
+        return -1
 
     def buy(self):
 
-        return self.client.create_order(
-            symbol=self.symbol,
-            side=Client.SIDE_BUY,
-            type=Client.ORDER_TYPE_MARKET,
-            quantity=self.buyAmount(),
-        )
+        buy_amount = self.buyAmount()
+        if buy_amount > 0:
+            return self.client.create_order(
+                symbol=self.symbol,
+                side=Client.SIDE_BUY,
+                type=Client.ORDER_TYPE_MARKET,
+                quantity=buy_amount,
+            )
+
+        return -1
 
 
 class Futures:
