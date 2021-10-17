@@ -3,7 +3,6 @@ from threading import Thread
 from chalice import Chalice
 from chalicelib.telegram import Telegram
 from chalicelib.exchange import Spot
-from chalicelib.trade import threadtradefuturs
 
 app = Chalice(app_name='bot')
 app.debug = True
@@ -32,22 +31,18 @@ def tradingspot():
         'egeo': {
             'key': 'vyghMLzH2Pvr0TCoV11Equ9kIK2jxL6ZpDh8pyUBz4hvAWXSLWO6rBHbogQmX9lH',
             'secret': 'yTmr8uu0w3ARIzTlYadGkWX79BlTHSybzzJeInrWcjUoygP3K7t81j4WXd8amMOM',
-            'quantity': 0,
         },
         'carlo': {
             'key': 'skorPuUbg9lMP15I2WAcjTwKH84o0mDg6iTCLFxWti2bWtBOOgDET3XlkFh2oiJB',
             'secret': 'GA57mual3HxhqsaLI7HUJd5UQtWUMaFUtxSVIoECfHNKKNXprKYGrNf8NhX2LXa2',
-            'quantity': 0,
         },
         'matteo': {
             'key': 'HgXwZ71GumHVtSDXLEApPA1khbjzFP5PitUjDFX4YWD60TOC5764gRhWgst6BclC',
             'secret': 'aeF2oUUROf4V0cxr0wOORKtZachDukTkUTC0zuXmnMJuUZBuqVcYGZWF6g1RsfEK',
-            'quantity': 0,
         },
         'giuseppe': {
             'key': 'cGAkMTuEYViqLzQ1jqlRG6RnOnZgSCbdh5gCwgPLvKABjbfnZimN5HKNEf9TSp6T',
             'secret': 'CROpCy26Koy6ufPcgx4C59dhHeMKbGXWiM4DccsFijcdPnkItH93PlNJAlUP1DJ5',
-            'quantity': 0,
         },
     }
 
@@ -87,7 +82,7 @@ def tradingspot():
                     telegram.send(message)
                 # Se non c'e bilancio per acquistare
                 else:
-                    message = "❗ They do not appear to be: " + str(asset) + " in your account" + \
+                    message = "❗ They do not appear to be free: " + str(asset) + " in your account" + \
                               "\n" + "User: " + k
                     telegram.send(message)
 
@@ -116,6 +111,7 @@ def tradingspot():
         except Exception as e:
             message = "Error: " + str(e)
             telegram.send(message)
+            continue
 
     return {'Trade': True}
 
