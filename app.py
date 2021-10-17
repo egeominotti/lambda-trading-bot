@@ -69,21 +69,22 @@ def tradingspot():
 
                 order_buy = exchange.buy()
                 if order_buy > 0:
+                    print(order_buy)
                     balance = round(exchange.getBalance(), 3)
-
                     now = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
                     message = "Buy Spot: " + str(ticker) + " 📈 " + \
                               "\n" + "User: " + k + \
                               "\n" + "Market Spot" \
-                              "\n" + "Buy Price: " + str(exchange.getCurrentPrice()) + \
+                                     "\n" + "Buy Price: " + str(exchange.getCurrentPrice()) + \
                               "\n" + "Balance: " + str(balance) + "$" \
-                              "\nDate: " + str(now)
+                                                                  "\nDate: " + str(now)
 
                     telegram.send(message)
                 # Se non c'e bilancio per acquistare
                 else:
-                    message = "❗ They do not appear to be free: " + str(asset) + " in your account" + \
-                              "\n" + "User: " + k
+                    message = k.upper() + " non posso comprare, risultano eseerci " + str(
+                        round(exchange.getFreeAssetBalance(),
+                              2)) + " " + asset + " nel tuo account è necessaria una quantità maggiore di 10."
                     telegram.send(message)
 
             # sell
@@ -98,14 +99,13 @@ def tradingspot():
                     message = "Sell Spot: " + str(ticker) + " ✅ " + \
                               "\n" + "User: " + k + \
                               "\n" + "Market Spot" \
-                              "\n" + "Sell Price: " + str(exchange.getCurrentPrice()) + \
+                                     "\n" + "Sell Price: " + str(exchange.getCurrentPrice()) + \
                               "\n" + "Balance: " + str(balance) + "$" \
-                              "\nDate: " + str(now)
+                                                                  "\nDate: " + str(now)
 
                     telegram.send(message)
                 else:
-                    message = "❗ They do not appear to be: " + str(asset) + " in your account" + \
-                              "\n" + "User: " + k
+                    message = k + " non posso comprare, risultano eseerci : " + str(asset) + " nel tuo account ❗"
                     telegram.send(message)
 
         except Exception as e:

@@ -44,6 +44,9 @@ class Spot:
     def getCurrentPrice(self):
         return float(self.client.get_symbol_ticker(symbol=self.symbol)['price'])
 
+    def getFreeAssetBalance(self):
+        return float(self.client.get_asset_balance(asset=self.asset)['free'])
+
     def buyAmount(self):
 
         balance_buy = float(self.client.get_asset_balance(asset=self.asset)['free'])
