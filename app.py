@@ -83,10 +83,15 @@ def tradingspot():
                     message = "Buy Spot: " + str(ticker) + " 📈 " + \
                               "\n" + "User: " + k + \
                               "\n" + "Market Spot" \
-                                     "\n" + "Buy Price: " + str(exchange.getCurrentPrice()) + \
+                              "\n" + "Buy Price: " + str(exchange.getCurrentPrice()) + \
                               "\n" + "Balance: " + str(balance) + "$" \
-                                                                  "\nDate: " + str(now)
+                              "\nDate: " + str(now)
 
+                    telegram.send(message)
+                # Se non c'e bilancio per acquistare
+                else:
+                    message = "❗ They do not appear to be: " + str(asset) + " in your account"+ \
+                              "\n" + "User: " + k
                     telegram.send(message)
 
             # sell
