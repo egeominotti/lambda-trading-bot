@@ -47,6 +47,9 @@ class Spot:
     def getFreeAssetBalance(self):
         return float(self.client.get_asset_balance(asset=self.asset)['free'])
 
+    def getFreePairBalance(self):
+        return float(self.client.get_asset_balance(asset=self.symbol.replace(self.asset, ''))['free'])
+
     def buyAmount(self):
 
         balance_buy = float(self.client.get_asset_balance(asset=self.asset)['free'])
@@ -61,9 +64,10 @@ class Spot:
     def sellAmount(self):
 
         balance_sell = float(self.client.get_asset_balance(asset=self.symbol.replace(self.asset, ''))['free'])
-        max_sell = round(balance_sell * .997, self.getSymbolPrecision())
-
-        return max_sell
+        if balance_sell > 0.0001:
+            max_sell = round(balance_sell * .997, self.getSymbolPrecision())
+            return max_sell
+        return -1
 
     def sell(self):
 
@@ -76,7 +80,7 @@ class Spot:
                 quantity=sell_amount,
             )
 
-        return -1
+        return sell_amount
 
     def buy(self):
 
@@ -89,8 +93,7 @@ class Spot:
                 quantity=buy_amount,
             )
 
-        return -1
-
+        return buy_amount
 
 # class Futures:
 #

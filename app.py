@@ -75,14 +75,14 @@ def tradingspot():
                     message = "Buy Spot: " + str(ticker) + " 📈 " + \
                               "\n" + "User: " + k + \
                               "\n" + "Market Spot" \
-                                     "\n" + "Buy Price: " + str(exchange.getCurrentPrice()) + \
+                              "\n" + "Buy Price: " + str(exchange.getCurrentPrice()) + \
                               "\n" + "Balance: " + str(balance) + "$" \
-                                                                  "\nDate: " + str(now)
+                              "\nDate: " + str(now)
 
                     telegram.send(message)
                 # Se non c'e bilancio per acquistare
                 else:
-                    message = k.upper() + " non posso comprare, risultano eseerci " + str(
+                    message = "⛔ " + k.upper() + " non posso comprare, risultano eseerci " + str(
                         round(exchange.getFreeAssetBalance(),
                               2)) + " " + asset + " nel tuo account è necessaria una quantità maggiore di 10."
                     telegram.send(message)
@@ -105,7 +105,9 @@ def tradingspot():
 
                     telegram.send(message)
                 else:
-                    message = k + " non posso comprare, risultano eseerci : " + str(asset) + " nel tuo account ❗"
+                    message = "⛔ " + k.upper() + " non posso vendere, risultano eseerci " + str(
+                        round(exchange.getFreePairBalance(),
+                              exchange.getSymbolPrecision())) + " " + ticker + " nel tuo account."
                     telegram.send(message)
 
         except Exception as e:
