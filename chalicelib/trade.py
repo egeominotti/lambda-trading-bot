@@ -1,11 +1,12 @@
 import sys
+from chalice import Chalice
 
 from chalicelib.exchange import Spot
 import datetime
-
+app = Chalice(app_name='bot')
+app.debug = True
 
 def tradespot(value):
-
     api_key = value.get('api_key')
     api_secret = value.get('api_secret')
     ticker = value.get('ticker')
@@ -24,7 +25,8 @@ def tradespot(value):
         if action == 'buy':
 
             order_buy = exchange.buy()
-            if order_buy > 0:
+            app.log.debug("Order buy: " + str(order_buy))
+            if isinstance(order_buy, dict):
                 balance = round(exchange.getBalance(), 3)
                 now = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
                 message = "Buy Spot: " + str(ticker) + " 📈 " + \
@@ -46,7 +48,8 @@ def tradespot(value):
         if action == 'sell':
 
             order_sell = exchange.sell()
-            if order_sell > 0:
+            app.log.debug("Order sell: " + str(order_sell))
+            if isinstance(order_sell, dict):
 
                 balance = round(exchange.getBalance(), 3)
 

@@ -53,7 +53,8 @@ class Spot:
 
         if balance_buy > 10:
             close = float(self.client.get_symbol_ticker(symbol=self.symbol)['price'])
-            max_buy = round(balance_buy / close * .997, self.getSymbolPrecision())
+            max_buy = round(balance_buy / close * .998, self.getSymbolPrecision())
+            print(max_buy)
             return max_buy
 
         return -1
@@ -61,7 +62,7 @@ class Spot:
     def sellAmount(self):
         balance_sell = float(self.client.get_asset_balance(asset=self.symbol.replace(self.asset, ''))['free'])
         if balance_sell > 0.0001:
-            max_sell = round(balance_sell * .997, self.getSymbolPrecision())
+            max_sell = round(balance_sell * .998, self.getSymbolPrecision())
             return max_sell
         return -1
 
@@ -76,7 +77,7 @@ class Spot:
                 quantity=sell_amount,
             )
 
-        return sell_amount
+        return -1
 
     def buy(self):
 
@@ -89,7 +90,7 @@ class Spot:
                 quantity=buy_amount,
             )
 
-        return buy_amount
+        return -1
 
 # class Futures:
 #
