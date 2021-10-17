@@ -28,17 +28,23 @@ def tradespot(value):
             app.log.debug("Order buy: " + str(order_buy))
             if isinstance(order_buy, dict):
                 balance = round(exchange.getBalance(), 3)
+
+                executedQty = float(order_buy.get('executedQty'))
+                #commission = float(order_buy.get('fills')[0]['commission'])
+                #commissionAsset = order_buy.get('fills')[0]['commissionAsset']
+
                 now = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
                 message = "Buy Spot: " + str(ticker) + " 📈 " + \
                           "\n" + "User: " + user + \
                           "\n" + "Market Spot" \
-                                 "\n" + "Buy Price: " + str(exchange.getCurrentPrice()) + \
-                          "\n" + "Balance: " + str(balance) + "$" \
-                                                              "\nDate: " + str(now)
+                          "\n" + "Buy Price: " + str(exchange.getCurrentPrice()) + \
+                          "\n" + "Quantity: " + str(round(executedQty, exchange.getSymbolPrecision())) + \
+                          "\nDate: " + str(now)
 
                 telegram.send(message)
-            # Se non c'e bilancio per acquistare
-            else:
+
+            # Se l'ordine non è un dizionario allora non è stato creato
+            if not isinstance(order_buy, dict):
                 message = "⛔ " + user.upper() + " non posso comprare, risultano eseerci " + str(
                     round(exchange.getFreeAssetBalance(),
                           2)) + " " + asset + " nel tuo account è necessaria una quantità maggiore di 10."
@@ -57,12 +63,12 @@ def tradespot(value):
                 message = "Sell Spot: " + str(ticker) + " ✅ " + \
                           "\n" + "User: " + user + \
                           "\n" + "Market Spot" \
-                                 "\n" + "Sell Price: " + str(exchange.getCurrentPrice()) + \
+                          "\n" + "Sell Price: " + str(exchange.getCurrentPrice()) + \
                           "\n" + "Balance: " + str(balance) + "$" \
-                                                              "\nDate: " + str(now)
+                          "\nDate: " + str(now)
 
                 telegram.send(message)
-            else:
+            if not isinstance(order_sell, dict):
                 message = "⛔ " + user.upper() + " non posso vendere, risultano eseerci " + str(
                     round(exchange.getFreePairBalance(),
                           exchange.getSymbolPrecision())) + " " + ticker + " nel tuo account."
