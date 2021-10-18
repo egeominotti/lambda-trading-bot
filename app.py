@@ -14,6 +14,7 @@ def index():
 
 @app.route('/tradingspot', methods=['POST'])
 def tradingspot():
+
     """
     JSON
 
@@ -56,7 +57,6 @@ def tradingspot():
 
     thread_list = list()
     for k, v in users.items():
-
         api_key = v.get('key')
         api_secret = v.get('secret')
 
@@ -139,7 +139,6 @@ def tradingspot():
     #         continue
 
     return {'Trade': True}
-
 
 # @app.route('/tradingfutures', methods=['POST'])
 # def tradingfutures():

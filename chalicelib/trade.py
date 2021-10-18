@@ -7,6 +7,7 @@ app = Chalice(app_name='bot')
 app.debug = True
 
 def tradespot(value):
+
     api_key = value.get('api_key')
     api_secret = value.get('api_secret')
     ticker = value.get('ticker')
