@@ -25,10 +25,10 @@ def tradespot(value):
         # buy
         if action == 'buy':
 
+            balance = round(exchange.getBalance(), 3)
             order_buy = exchange.buy()
             app.log.debug("Order buy: " + str(order_buy))
             if isinstance(order_buy, dict):
-                balance = round(exchange.getBalance(), 3)
 
                 executedQty = float(order_buy.get('executedQty'))
                 #commission = float(order_buy.get('fills')[0]['commission'])
@@ -40,6 +40,7 @@ def tradespot(value):
                           "\n" + "Market Spot" \
                           "\n" + "Buy Price: " + str(exchange.getCurrentPrice()) + \
                           "\n" + "Quantity: " + str(round(executedQty, exchange.getSymbolPrecision())) + \
+                          "\n" + "Balance: " + str(balance) + \
                           "\nDate: " + str(now)
 
                 telegram.send(message)
@@ -67,6 +68,7 @@ def tradespot(value):
                           "\n" + "Market Spot" \
                           "\n" + "Sell Price: " + str(exchange.getCurrentPrice()) + \
                           "\n" + "Quantity: " + str(round(executedQty, exchange.getSymbolPrecision())) + \
+                          "\n" + "Balance: " + str(balance) + \
                           "\nDate: " + str(now)
 
                 telegram.send(message)
