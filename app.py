@@ -57,6 +57,7 @@ def tradingspot():
 
     thread_list = list()
     for k, v in users.items():
+
         api_key = v.get('key')
         api_secret = v.get('secret')
 
@@ -78,6 +79,7 @@ def tradingspot():
     for thread in thread_list:
         thread.join()
 
+    return {'Trade': True}
     # for k, v in users.items():
     #
     #     try:
@@ -138,7 +140,7 @@ def tradingspot():
     #         telegram.send(message)
     #         continue
 
-    return {'Trade': True}
+
 
 # @app.route('/tradingfutures', methods=['POST'])
 # def tradingfutures():
