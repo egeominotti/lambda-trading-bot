@@ -93,7 +93,6 @@ def tradespot(value):
         # sell
         if action == 'sell':
 
-            #buy_balance = readfile(user, ticker)
             order_sell = exchange.sell()
             app.log.debug("Order sell: " + str(order_sell))
 
