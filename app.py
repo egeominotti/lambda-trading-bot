@@ -14,7 +14,6 @@ def index():
 
 @app.route('/tradingspot', methods=['POST'])
 def tradingspot():
-
     """
     JSON
 
@@ -139,8 +138,6 @@ def tradingspot():
     #         message = "Error: " + str(e)
     #         telegram.send(message)
     #         continue
-
-
 
 # @app.route('/tradingfutures', methods=['POST'])
 # def tradingfutures():

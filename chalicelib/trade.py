@@ -1,8 +1,8 @@
 import sys
 from chalice import Chalice
-
 from chalicelib.exchange import Spot
 import datetime
+
 app = Chalice(app_name='bot')
 app.debug = True
 
