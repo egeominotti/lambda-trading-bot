@@ -31,8 +31,6 @@ def tradespot(value):
             if isinstance(order_buy, dict):
 
                 executedQty = float(order_buy.get('executedQty'))
-                #commission = float(order_buy.get('fills')[0]['commission'])
-                #commissionAsset = order_buy.get('fills')[0]['commissionAsset']
 
                 now = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
                 message = "Buy Spot: " + str(ticker) + " 📈 " + \
