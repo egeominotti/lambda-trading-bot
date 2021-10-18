@@ -1,10 +1,35 @@
 import sys
+import os
+from multiprocessing import Process
+from threading import Thread
+
 from chalice import Chalice
+
+import requests
 from chalicelib.exchange import Spot
 import datetime
+import json
 
 app = Chalice(app_name='bot')
 app.debug = True
+
+def savehistory(data):
+    json_object = json.dumps(data, indent=4)
+    with open("history_" + data.get('user') + '_' + data.get('ticker') + '.json', "w") as outfile:
+        outfile.write(json_object)
+        outfile.flush()
+        outfile.close()
+
+def readhistory(data):
+    read_file_name = "history_" + data.get('user') + '_' + data.get('ticker') + '.json'
+    with open(read_file_name, 'r') as f:
+        data_loaded = json.load(f)
+        f.close()
+        buy_balance = data_loaded.get('qty')
+        app.log.debug(data_loaded)
+    os.remove(read_file_name)
+
+    return {'balance': buy_balance}
 
 def tradespot(value):
 
@@ -25,23 +50,38 @@ def tradespot(value):
         # buy
         if action == 'buy':
 
-            balance = round(exchange.getBalance(), 3)
+            balance = round(exchange.getFreeAssetBalance(), 3)
             order_buy = exchange.buy()
             app.log.debug("Order buy: " + str(order_buy))
             if isinstance(order_buy, dict):
 
                 executedQty = float(order_buy.get('executedQty'))
 
+
                 now = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
                 message = "Buy Spot: " + str(ticker) + " 📈 " + \
                           "\n" + "User: " + user + \
                           "\n" + "Market Spot" \
-                          "\n" + "Buy Price: " + str(exchange.getCurrentPrice()) + \
+                          "\n" + "Buy Price: " + str(exchange.getCurrentPrice()) + "$" \
                           "\n" + "Quantity: " + str(round(executedQty, exchange.getSymbolPrecision())) + \
-                          "\n" + "Balance: " + str(balance) + \
+                          "\n" + "Start trade quantity: " + str(balance) + " " + asset + \
                           "\nDate: " + str(now)
 
                 telegram.send(message)
+
+                data = {
+                    'user': user,
+                    'orderId': order_buy.get('orderId'),
+                    'qty': balance,
+                    'asset': asset,
+                    'ticker': ticker
+                }
+
+                thread = Thread(target=savehistory, args=(data,))
+                thread.daemon = True
+                thread.start()
+                status = thread.join()
+                app.log.debug(status)
 
             # Se l'ordine non è un dizionario allora non è stato creato
             if isinstance(order_buy, Exception):
@@ -53,21 +93,34 @@ def tradespot(value):
         # sell
         if action == 'sell':
 
+            #buy_balance = readfile(user, ticker)
             order_sell = exchange.sell()
             app.log.debug("Order sell: " + str(order_sell))
 
             if isinstance(order_sell, dict):
 
-                balance = round(exchange.getBalance(), 3)
+                balance = round(exchange.getFreeAssetBalance(), 3)
                 executedQty = float(order_sell.get('executedQty'))
 
                 now = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+
+                data = {
+                    'user': user,
+                    'ticker': ticker
+                }
+
+                thread = Thread(target=readhistory, args=(data,))
+                thread.daemon = True
+                thread.start()
+                profit = thread.join()
+                app.log.debug(profit)
+
                 message = "Sell Spot: " + str(ticker) + " ✅ " + \
                           "\n" + "User: " + user + \
                           "\n" + "Market Spot" \
-                          "\n" + "Sell Price: " + str(exchange.getCurrentPrice()) + \
+                          "\n" + "Sell Price: " + str(exchange.getCurrentPrice()) + "$" \
                           "\n" + "Quantity: " + str(round(executedQty, exchange.getSymbolPrecision())) + \
-                          "\n" + "Balance: " + str(balance) + \
+                          "\n" + "Profit/Loss: " + str(round(balance - 1,2)) + " " + asset +\
                           "\nDate: " + str(now)
 
                 telegram.send(message)
@@ -75,7 +128,7 @@ def tradespot(value):
             if isinstance(order_sell, Exception):
                 message = "⛔ " + user.upper() + " non posso vendere, risultano eseerci " + str(
                     round(exchange.getFreePairBalance(),
-                          exchange.getSymbolPrecision())) + " " + ticker + " nel tuo account."
+                          exchange.getSymbolPrecision())) + " " + ticker + " nel tuo account, che sono inferiori a 10$"
                 telegram.send(message)
 
     except Exception as e:

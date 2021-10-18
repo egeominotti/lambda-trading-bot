@@ -14,7 +14,6 @@ def index():
 
 @app.route('/tradingspot', methods=['POST'])
 def tradingspot():
-
     """
     JSON body
     {
@@ -56,7 +55,6 @@ def tradingspot():
 
     thread_list = list()
     for k, v in users.items():
-
         app.log.debug("User: " + str(k))
 
         api_key = v.get('key')
@@ -73,6 +71,7 @@ def tradingspot():
         }
 
         thread = Thread(target=tradespot, args=(values,))
+        thread.daemon = True
         app.log.debug("Thread for: " + str(k))
         thread_list.append(thread)
         thread.start()

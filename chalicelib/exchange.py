@@ -31,13 +31,6 @@ class Spot:
         precision = int(round(-math.log(step_size, 10), 0))
         return precision
 
-    def getBalance(self):
-        balances = self.client.get_account()
-        for _balance in balances["balances"]:
-            if _balance["asset"] == self.asset:
-                free_asset = _balance["free"]
-                return float(free_asset)
-
     def getCurrentPrice(self):
         return float(self.client.get_symbol_ticker(symbol=self.symbol)['price'])
 
