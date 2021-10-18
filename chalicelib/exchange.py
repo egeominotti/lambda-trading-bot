@@ -61,18 +61,28 @@ class Spot:
 
     def sell(self):
 
-        return self.client.create_order(
-            symbol=self.symbol,
-            side=Client.SIDE_SELL,
-            type=Client.ORDER_TYPE_MARKET,
-            quantity=self.sellAmount(),
-        )
+        try:
+
+            return self.client.create_order(
+                symbol=self.symbol,
+                side=Client.SIDE_SELL,
+                type=Client.ORDER_TYPE_MARKET,
+                quantity=self.sellAmount(),
+            )
+
+        except Exception as e:
+            return e
 
     def buy(self):
 
-        return self.client.create_order(
-            symbol=self.symbol,
-            side=Client.SIDE_BUY,
-            type=Client.ORDER_TYPE_MARKET,
-            quantity=self.buyAmount(),
-        )
+        try:
+
+            return self.client.create_order(
+                symbol=self.symbol,
+                side=Client.SIDE_BUY,
+                type=Client.ORDER_TYPE_MARKET,
+                quantity=self.buyAmount(),
+            )
+
+        except Exception as e:
+            return e

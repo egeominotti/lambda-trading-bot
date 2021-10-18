@@ -44,7 +44,7 @@ def tradespot(value):
                 telegram.send(message)
 
             # Se l'ordine non è un dizionario allora non è stato creato
-            if not isinstance(order_buy, dict):
+            if isinstance(order_buy, Exception):
                 message = "⛔ " + user.upper() + " non posso comprare, risultano eseerci " + str(
                     round(exchange.getFreeAssetBalance(),
                           2)) + " " + asset + " nel tuo account è necessaria una quantità maggiore di 10."
@@ -55,6 +55,7 @@ def tradespot(value):
 
             order_sell = exchange.sell()
             app.log.debug("Order sell: " + str(order_sell))
+
             if isinstance(order_sell, dict):
 
                 balance = round(exchange.getBalance(), 3)
@@ -70,7 +71,8 @@ def tradespot(value):
                           "\nDate: " + str(now)
 
                 telegram.send(message)
-            if not isinstance(order_sell, dict):
+
+            if isinstance(order_sell, Exception):
                 message = "⛔ " + user.upper() + " non posso vendere, risultano eseerci " + str(
                     round(exchange.getFreePairBalance(),
                           exchange.getSymbolPrecision())) + " " + ticker + " nel tuo account."
