@@ -6,6 +6,7 @@ from binance.enums import *
 from chalice import Chalice
 
 app = Chalice(app_name='bot')
+app.debug = True
 
 
 class Spot:
@@ -50,47 +51,36 @@ class Spot:
     def buyAmount(self):
 
         balance_buy = float(self.client.get_asset_balance(asset=self.asset)['free'])
+        close = float(self.client.get_symbol_ticker(symbol=self.symbol)['price'])
+        app.log.debug("Max buy: " + str(balance_buy))
+        max_buy = round(balance_buy / close * .998, self.getSymbolPrecision())
 
-        if balance_buy > 10:
-            close = float(self.client.get_symbol_ticker(symbol=self.symbol)['price'])
-            max_buy = round(balance_buy / close * .998, self.getSymbolPrecision())
-            print(max_buy)
-            return max_buy
-
-        return -1
+        return max_buy
 
     def sellAmount(self):
         balance_sell = float(self.client.get_asset_balance(asset=self.symbol.replace(self.asset, ''))['free'])
-        if balance_sell > 0.0001:
-            max_sell = round(balance_sell * .998, self.getSymbolPrecision())
-            return max_sell
-        return -1
+        max_sell = round(balance_sell * .998, self.getSymbolPrecision())
+        app.log.debug("Max sell: " + str(max_sell))
+
+        return max_sell
 
     def sell(self):
 
-        sell_amount = self.sellAmount()
-        if sell_amount > 0:
-            return self.client.create_order(
-                symbol=self.symbol,
-                side=Client.SIDE_SELL,
-                type=Client.ORDER_TYPE_MARKET,
-                quantity=sell_amount,
-            )
-
-        return -1
+        return self.client.create_order(
+            symbol=self.symbol,
+            side=Client.SIDE_SELL,
+            type=Client.ORDER_TYPE_MARKET,
+            quantity=self.sellAmount(),
+        )
 
     def buy(self):
 
-        buy_amount = self.buyAmount()
-        if buy_amount > 0:
-            return self.client.create_order(
-                symbol=self.symbol,
-                side=Client.SIDE_BUY,
-                type=Client.ORDER_TYPE_MARKET,
-                quantity=buy_amount,
-            )
-
-        return -1
+        return self.client.create_order(
+            symbol=self.symbol,
+            side=Client.SIDE_BUY,
+            type=Client.ORDER_TYPE_MARKET,
+            quantity=self.buyAmount(),
+        )
 
 # class Futures:
 #
