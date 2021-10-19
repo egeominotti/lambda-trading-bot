@@ -16,6 +16,7 @@ def tradespot(value):
     telegram = value.get('telegram')
 
     try:
+
         exchange = Spot(api_key=api_key,
                         api_secret=api_secret,
                         symbol=ticker,
