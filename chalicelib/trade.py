@@ -52,7 +52,6 @@ def tradespot(value):
 
                 executedQty = float(order_buy.get('executedQty'))
 
-
                 now = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
                 message = "Buy Spot: " + str(ticker) + " 📈 " + \
                           "\n" + "User: " + user + \
@@ -63,20 +62,6 @@ def tradespot(value):
                           "\nDate: " + str(now)
 
                 telegram.send(message)
-
-                data = {
-                    'user': user,
-                    'orderId': order_buy.get('orderId'),
-                    'qty': balance,
-                    'asset': asset,
-                    'ticker': ticker
-                }
-
-                # thread = Thread(target=savehistory, args=(data,))
-                # thread.daemon = True
-                # thread.start()
-                # status = thread.join()
-                # app.log.debug(status)
 
             # Se l'ordine non è un dizionario allora non è stato creato
             if isinstance(order_buy, Exception):
@@ -97,17 +82,6 @@ def tradespot(value):
                 executedQty = float(order_sell.get('executedQty'))
 
                 now = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
-
-                data = {
-                    'user': user,
-                    'ticker': ticker
-                }
-
-                # thread = Thread(target=readhistory, args=(data,))
-                # thread.daemon = True
-                # thread.start()
-                # return_value = thread.join()
-                # qty = return_value.get('balance')
 
                 message = "Sell Spot: " + str(ticker) + " ✅ " + \
                           "\n" + "User: " + user + \
