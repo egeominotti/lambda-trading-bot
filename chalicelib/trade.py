@@ -1,30 +1,9 @@
-import os
 from chalice import Chalice
 from chalicelib.exchange import Spot
 import datetime
-import json
 
 app = Chalice(app_name='bot')
 app.debug = True
-
-
-def savehistory(data):
-    json_object = json.dumps(data, indent=4)
-    write_file_name = "/tmp/history_" + data.get('user') + '_' + data.get('ticker') + '.json'
-    with open(write_file_name, "w") as outfile:
-        outfile.write(json_object)
-        outfile.close()
-
-def readhistory(data):
-    read_file_name = "/tmp/history_" + data.get('user') + '_' + data.get('ticker') + '.json'
-    with open(read_file_name, 'r') as f:
-        data_loaded = json.load(f)
-        buy_balance = data_loaded.get('qty')
-        app.log.debug(data_loaded)
-        f.close()
-    os.remove(read_file_name)
-
-    return {'balance': buy_balance}
 
 def tradespot(value):
 
