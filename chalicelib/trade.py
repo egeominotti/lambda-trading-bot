@@ -73,8 +73,6 @@ def tradespot(value):
         # sell
         if action == 'sell':
 
-            my_trades = exchange.getMyTrades()
-            app.log.debug(my_trades)
             order_sell = exchange.sell()
             app.log.debug("Order sell: " + str(order_sell))
 
@@ -90,7 +88,7 @@ def tradespot(value):
                           "\n" + "Market Spot" \
                           "\n" + "Sell Price: " + str(exchange.getCurrentPrice()) + "$" \
                           "\n" + "Quantity: " + str(round(executedQty, exchange.getSymbolPrecision())) + \
-                          "\n" + "Balance: " + str(round(balance,2)) + " " + asset +\
+                          "\n" + "Balance: " + str(round(balance, 2)) + " " + asset +\
                           "\nDate: " + str(now)
 
                 telegram.send(message)
