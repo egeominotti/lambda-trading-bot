@@ -1,11 +1,5 @@
-import sys
 import os
-from multiprocessing import Process
-from threading import Thread
-
 from chalice import Chalice
-
-import requests
 from chalicelib.exchange import Spot
 import datetime
 import json
@@ -13,20 +7,21 @@ import json
 app = Chalice(app_name='bot')
 app.debug = True
 
+
 def savehistory(data):
     json_object = json.dumps(data, indent=4)
-    with open("history_" + data.get('user') + '_' + data.get('ticker') + '.json', "w") as outfile:
+    write_file_name = "/tmp/history_" + data.get('user') + '_' + data.get('ticker') + '.json'
+    with open(write_file_name, "w") as outfile:
         outfile.write(json_object)
-        outfile.flush()
         outfile.close()
 
 def readhistory(data):
-    read_file_name = "history_" + data.get('user') + '_' + data.get('ticker') + '.json'
+    read_file_name = "/tmp/history_" + data.get('user') + '_' + data.get('ticker') + '.json'
     with open(read_file_name, 'r') as f:
         data_loaded = json.load(f)
-        f.close()
         buy_balance = data_loaded.get('qty')
         app.log.debug(data_loaded)
+        f.close()
     os.remove(read_file_name)
 
     return {'balance': buy_balance}
@@ -77,11 +72,11 @@ def tradespot(value):
                     'ticker': ticker
                 }
 
-                thread = Thread(target=savehistory, args=(data,))
-                thread.daemon = True
-                thread.start()
-                status = thread.join()
-                app.log.debug(status)
+                # thread = Thread(target=savehistory, args=(data,))
+                # thread.daemon = True
+                # thread.start()
+                # status = thread.join()
+                # app.log.debug(status)
 
             # Se l'ordine non è un dizionario allora non è stato creato
             if isinstance(order_buy, Exception):
@@ -108,18 +103,18 @@ def tradespot(value):
                     'ticker': ticker
                 }
 
-                thread = Thread(target=readhistory, args=(data,))
-                thread.daemon = True
-                thread.start()
-                profit = thread.join()
-                app.log.debug(profit)
+                # thread = Thread(target=readhistory, args=(data,))
+                # thread.daemon = True
+                # thread.start()
+                # return_value = thread.join()
+                # qty = return_value.get('balance')
 
                 message = "Sell Spot: " + str(ticker) + " ✅ " + \
                           "\n" + "User: " + user + \
                           "\n" + "Market Spot" \
                           "\n" + "Sell Price: " + str(exchange.getCurrentPrice()) + "$" \
                           "\n" + "Quantity: " + str(round(executedQty, exchange.getSymbolPrecision())) + \
-                          "\n" + "Profit/Loss: " + str(round(balance - 1,2)) + " " + asset +\
+                          "\n" + "Balance: " + str(round(balance,2)) + " " + asset +\
                           "\nDate: " + str(now)
 
                 telegram.send(message)
