@@ -40,6 +40,9 @@ class Spot:
     def getFreePairBalance(self):
         return float(self.client.get_asset_balance(asset=self.symbol.replace(self.asset, ''))['free'])
 
+    def getMyTrades(self):
+        return self.client.get_my_trades(symbol=self.symbol)
+
     def buyAmount(self):
 
         max_buy = round(self.getFreeAssetBalance() / self.getCurrentPrice() * .998, self.getSymbolPrecision())

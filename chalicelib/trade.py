@@ -73,6 +73,8 @@ def tradespot(value):
         # sell
         if action == 'sell':
 
+            my_trades = exchange.getMyTrades()
+            app.log.debug(my_trades)
             order_sell = exchange.sell()
             app.log.debug("Order sell: " + str(order_sell))
 
