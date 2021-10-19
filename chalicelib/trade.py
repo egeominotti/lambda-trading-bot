@@ -38,7 +38,7 @@ def tradespot(value):
                           "\n" + "Market Spot" \
                           "\n" + "Buy Price: " + str(exchange.getCurrentPrice()) + "$" \
                           "\n" + "Quantity: " + str(round(executedQty, exchange.getSymbolPrecision())) + \
-                          "\n" + "Start trade quantity: " + str(balance) + " " + asset + \
+                          "\n" + "Balance: " + str(balance) + " " + asset + \
                           "\nDate: " + str(now)
 
                 telegram.send(message)
