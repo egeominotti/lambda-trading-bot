@@ -47,7 +47,7 @@ def tradespot(value):
             if isinstance(order_buy, Exception):
                 message = "⛔ " + user.upper() + " non posso comprare, risultano eseerci " + str(
                     round(exchange.getFreeAssetBalance(),
-                          2)) + " " + asset + " nel tuo account è necessaria una quantità maggiore di 10."
+                          2)) + " " + asset + " nel tuo account è necessaria una quantità maggiore di 10." + " errore " + str(order_buy)
                 telegram.send(message)
 
         # sell
@@ -76,7 +76,7 @@ def tradespot(value):
             if isinstance(order_sell, Exception):
                 message = "⛔ " + user.upper() + " non posso vendere, risultano eseerci " + str(
                     round(exchange.getFreePairBalance(),
-                          exchange.getSymbolPrecision())) + " " + ticker + " nel tuo account, che sono inferiori a 10$"
+                          exchange.getSymbolPrecision())) + " " + ticker + " nel tuo account, che sono inferiori a 10$" + " errore " + str(order_sell)
                 telegram.send(message)
 
     except Exception as e:
