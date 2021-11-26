@@ -14,6 +14,79 @@ app.debug = True
 def index():
     return {"Hello": "Traders"}
 
+@app.route('/tradingbotpriceaction', methods=['POST'])
+def tradingspot():
+    """
+    JSON
+
+    {
+        "action": "{{strategy.order.action}}",
+        "exchange": "{{exchange}}",
+        "ticker": "{{ticker}}",
+    }
+
+    """
+
+    users = {
+        'egeo': {
+            'key': 'vyghMLzH2Pvr0TCoV11Equ9kIK2jxL6ZpDh8pyUBz4hvAWXSLWO6rBHbogQmX9lH',
+            'secret': 'yTmr8uu0w3ARIzTlYadGkWX79BlTHSybzzJeInrWcjUoygP3K7t81j4WXd8amMOM'
+        },
+        'carlo': {
+            'key': 'skorPuUbg9lMP15I2WAcjTwKH84o0mDg6iTCLFxWti2bWtBOOgDET3XlkFh2oiJB',
+            'secret': 'GA57mual3HxhqsaLI7HUJd5UQtWUMaFUtxSVIoECfHNKKNXprKYGrNf8NhX2LXa2'
+        }
+    }
+
+    request = app.current_request
+    data = request.json_body
+
+    action = data.get('action')
+    ticker = data.get('ticker')
+
+    telegram = Telegram()
+
+    for k, v in users.items():
+
+        try:
+
+            exchange = Spot(api_key=v.get('key'), api_secret=v.get('secret'), symbol=ticker)
+
+            # buy
+            if action == 'buy':
+                order = exchange.buy()
+                balance = round(exchange.getBalance(), 3)
+
+                now = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+                message = "Buy: " + str(ticker) + " 📈 " + \
+                          "\n" + "User: " + k + \
+                          "\n" + "Market Spot" \
+                                 "\n" + "Buy Price: " + str(exchange.getCurrentPrice()) + \
+                          "\n" + "Balance: " + str(balance) + \
+                          "\nDate: " + str(now)
+
+                telegram.send(message)
+
+            # sell
+            if action == 'sell':
+                order = exchange.sell()
+                balance = round(exchange.getBalance(), 3)
+
+                now = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+                message = "Sell: " + str(ticker) + " ✅ " + \
+                          "\n" + "User: " + k + \
+                          "\n" + "Market Spot" \
+                                 "\n" + "Sell Price: " + str(exchange.getCurrentPrice()) + \
+                          "\n" + "Balance: " + str(balance) + \
+                          "\nDate: " + str(now)
+
+                telegram.send(message)
+
+        except Exception as e:
+            message = "Error: " + str(e)
+            telegram.send(message)
+
+    return {'Trade': True}
 
 @app.route('/tradingspot', methods=['POST'])
 def tradingspot():
