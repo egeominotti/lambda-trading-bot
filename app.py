@@ -12,27 +12,28 @@ def index():
     return {"Hello": "Traders"}
 
 @app.route('/tradingbotpriceaction', methods=['POST'])
-def tradingspot():
-    """
-    JSON
+def tradingspotpriceaction():
 
+    """
+    JSON body
     {
         "action": "{{strategy.order.action}}",
         "exchange": "{{exchange}}",
         "ticker": "{{ticker}}",
+        "asset": "BUSD" / or "USDT"
     }
-
     """
 
     users = {
+
         'egeo': {
-            'key': 'vyghMLzH2Pvr0TCoV11Equ9kIK2jxL6ZpDh8pyUBz4hvAWXSLWO6rBHbogQmX9lH',
-            'secret': 'yTmr8uu0w3ARIzTlYadGkWX79BlTHSybzzJeInrWcjUoygP3K7t81j4WXd8amMOM'
+            'key': 'g4m5LHCwMI1evVuaf6zgKXtszDnSboQla5O5c7uWVtBmdbaiTLNQWPnO9ImbYB9U',
+            'secret': 'b2kxHirJLXDrXuFGvLWUtXvRyUXQu4NvsY8lSy94bJjnJFn0SmESuBq60DJi9b0B',
         },
         'carlo': {
-            'key': 'skorPuUbg9lMP15I2WAcjTwKH84o0mDg6iTCLFxWti2bWtBOOgDET3XlkFh2oiJB',
-            'secret': 'GA57mual3HxhqsaLI7HUJd5UQtWUMaFUtxSVIoECfHNKKNXprKYGrNf8NhX2LXa2'
-        }
+            'key': 'qElsCKJ7X6Dk8W7WmC5ww3z5nYl3mrAGHGhq1TtG3pOlje6cE0tX2bjSpwrWbJwC',
+            'secret': 'Vyx1jqaKWHv4SWr7aoRoalVIkaDQXh8pg5E9bi3lPDLh9p7tieHfCDvQaFKcsKJj',
+        },
     }
 
     request = app.current_request
@@ -40,48 +41,35 @@ def tradingspot():
 
     action = data.get('action')
     ticker = data.get('ticker')
+    asset = data.get('asset')
 
     telegram = Telegram()
 
+    thread_list = list()
     for k, v in users.items():
+        app.log.debug("User: " + str(k))
 
-        try:
+        api_key = v.get('key')
+        api_secret = v.get('secret')
 
-            exchange = Spot(api_key=v.get('key'), api_secret=v.get('secret'), symbol=ticker)
+        values = {
+            'api_key': api_key,
+            'api_secret': api_secret,
+            'action': action,
+            'ticker': ticker,
+            'telegram': telegram,
+            "asset": asset,
+            'user': k
+        }
 
-            # buy
-            if action == 'buy':
-                order = exchange.buy()
-                balance = round(exchange.getBalance(), 3)
+        thread = Thread(target=tradespot, args=(values,))
+        thread.daemon = True
+        app.log.debug("Thread for: " + str(k))
+        thread_list.append(thread)
+        thread.start()
 
-                now = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
-                message = "Buy: " + str(ticker) + " 📈 " + \
-                          "\n" + "User: " + k + \
-                          "\n" + "Market Spot" \
-                                 "\n" + "Buy Price: " + str(exchange.getCurrentPrice()) + \
-                          "\n" + "Balance: " + str(balance) + \
-                          "\nDate: " + str(now)
-
-                telegram.send(message)
-
-            # sell
-            if action == 'sell':
-                order = exchange.sell()
-                balance = round(exchange.getBalance(), 3)
-
-                now = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
-                message = "Sell: " + str(ticker) + " ✅ " + \
-                          "\n" + "User: " + k + \
-                          "\n" + "Market Spot" \
-                                 "\n" + "Sell Price: " + str(exchange.getCurrentPrice()) + \
-                          "\n" + "Balance: " + str(balance) + \
-                          "\nDate: " + str(now)
-
-                telegram.send(message)
-
-        except Exception as e:
-            message = "Error: " + str(e)
-            telegram.send(message)
+    for thread in thread_list:
+        thread.join()
 
     return {'Trade': True}
 
