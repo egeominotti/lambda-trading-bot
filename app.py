@@ -21,6 +21,7 @@ def tradingbotpriceaction():
         "exchange": "{{exchange}}",
         "ticker": "{{ticker}}",
         "asset": "BUSD" / or "USDT"
+        "coins": {{ number of coins }} // for division balance
     }
     """
 
