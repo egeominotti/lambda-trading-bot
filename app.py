@@ -12,7 +12,7 @@ def index():
     return {"Hello": "Traders"}
 
 @app.route('/tradingbotpriceaction', methods=['POST'])
-def tradingspotpriceaction():
+def tradingbotpriceaction():
 
     """
     JSON body
